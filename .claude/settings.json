@@ -1,0 +1,36 @@
+{
+  "enabledMcpjsonServers": [
+    "github",
+    "supabase",
+    "vercel"
+  ],
+  "hooks": {
+    "PreToolUse": [
+      {
+        "matcher": "Bash",
+        "hooks": [
+          {
+            "type": "agent",
+            "prompt": "사용자가 'git commit' 명령을 실행하려고 합니다. 먼저 git diff와 git status를 실행하여 현재 변경사항을 분석하고, 좋은 한국어 커밋 메시지 작성을 위한 가이드와 제안을 제공해주세요. 변경사항을 요약하고 (3-5줄의 명확한 한국어 메시지), 이 프로젝트의 커밋 메시지 컨벤션(한국어, 명사 또는 동사로 시작)을 따르도록 안내해주세요.",
+            "if": "Bash(git commit*)",
+            "statusMessage": "커밋 메시지 최적화 분석 중...",
+            "model": "claude-haiku-4-5-20251001"
+          }
+        ]
+      }
+    ],
+    "PostToolUse": [
+      {
+        "matcher": "Bash",
+        "hooks": [
+          {
+            "type": "prompt",
+            "prompt": "사용자가 'git commit' 명령을 실행했습니다. 커밋 메시지가 제대로 작성되었는지 확인해주세요. 만약 empty commit message 또는 임시 메시지만 있다면 사용자에게 명확한 한국어 커밋 메시지를 작성하도록 안내하고, 그렇지 않으면 진행을 허용합니다. 커밋 메시지는 한국어로 작성되어야 합니다.",
+            "if": "Bash(git commit*)",
+            "statusMessage": "커밋 메시지 검증 중..."
+          }
+        ]
+      }
+    ]
+  }
+}
