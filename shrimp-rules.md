@@ -1,10 +1,10 @@
-# Development Guidelines
+# 개발 가이드라인
 
-프로젝트 AI 에이전트를 위한 개발 규칙 및 의사결정 기준 문서입니다.
+AI 에이전트를 위한 프로젝트 개발 규칙 및 의사결정 기준 문서입니다.
 
 ---
 
-## Project Overview
+## 프로젝트 개요
 
 **프로젝트명**: Notion CMS Blog
 **목적**: Notion을 CMS로 활용한 개인 기술 블로그
@@ -14,19 +14,19 @@
 
 ### 핵심 문서
 - **PRD**: @docs/PRD.md (기능 정의 및 요구사항)
-- **ROADMAP**: @docs/ROADMAP.md (5개 Phase 개발 로드맵)
-- **CLAUDE.md**: @CLAUDE.md (프로젝트 기술 스택 및 코드 스타일)
+- **로드맵**: @docs/ROADMAP.md (5개 Phase 개발 로드맵)
+- **클로드 설정**: @CLAUDE.md (프로젝트 기술 스택 및 코드 스타일)
 
 ---
 
-## Project Architecture
+## 프로젝트 구조
 
 ### 폴더 구조
 
 ```
 project-name/
 ├── src/
-│   ├── app/                 # Next.js 15 app directory
+│   ├── app/                 # Next.js 15 앱 디렉토리
 │   │   ├── page.tsx        # 홈 페이지
 │   │   ├── posts/
 │   │   │   └── [slug]/     # 글 상세 페이지 (동적 라우팅)
@@ -44,7 +44,7 @@ project-name/
 │   └── styles/              # 전역 스타일
 ├── docs/                    # 프로젝트 문서
 ├── public/                  # 정적 자산
-├── .claude/                 # Claude Code 설정
+├── .claude/                 # 클로드 코드 설정
 └── package.json
 ```
 
@@ -52,11 +52,11 @@ project-name/
 
 - **모든 파일은 src/ 하위에 배치**
 - **새 기능 추가 시**: 관련된 타입, 컴포넌트, 유틸 함수를 함께 수정
-- **app directory 사용**: pages/ 디렉토리 금지 (Next.js 15 규칙)
+- **앱 디렉토리 사용**: pages/ 디렉토리 금지 (Next.js 15 규칙)
 
 ---
 
-## Code Standards
+## 코드 표준
 
 ### TypeScript 설정
 
@@ -66,7 +66,7 @@ project-name/
 - 모든 함수는 **명시적 매개변수 타입** 및 **반환 타입** 정의 필수
 - 리액트 props는 interface 또는 type으로 정의
 
-**예시 (정확한 방식)**:
+**올바른 예시**:
 ```typescript
 interface PostCardProps {
   title: string;
@@ -96,7 +96,7 @@ export function PostCard({ title, category, publishedDate }: PostCardProps) {
 **필수 준수**:
 - 모든 변수 사용 전 선언
 - console.log는 개발 중에만 사용 (프로덕션 배포 전 제거)
-- React hooks 의존성 배열 완전성
+- React 훅 의존성 배열 완전성
 
 ---
 
@@ -105,27 +105,27 @@ export function PostCard({ title, category, publishedDate }: PostCardProps) {
 | 항목 | 규칙 |
 |------|------|
 | 들여쓰기 | 2칸 (탭 금지) |
-| 변수명 | camelCase (예: `fetchedPosts`, `isLoading`) |
-| 함수명 | camelCase (예: `fetchPosts()`, `renderContent()`) |
-| 컴포넌트명 | PascalCase (예: `PostCard`, `NotionRenderer`) |
-| 타입명 | PascalCase (예: `Post`, `Category`) |
-| 상수명 | UPPER_SNAKE_CASE (예: `API_BASE_URL`, `MAX_PAGE_SIZE`) |
-| 파일명 | 컴포넌트: PascalCase (예: `PostCard.tsx`), 유틸: camelCase (예: `fetchPosts.ts`) |
+| 변수명 | 카멜케이스 (예: `fetchedPosts`, `isLoading`) |
+| 함수명 | 카멜케이스 (예: `fetchPosts()`, `renderContent()`) |
+| 컴포넌트명 | 파스칼케이스 (예: `PostCard`, `NotionRenderer`) |
+| 타입명 | 파스칼케이스 (예: `Post`, `Category`) |
+| 상수명 | 대문자 스네이크케이스 (예: `API_BASE_URL`, `MAX_PAGE_SIZE`) |
+| 파일명 | 컴포넌트: 파스칼케이스 (예: `PostCard.tsx`), 유틸: 카멜케이스 (예: `fetchPosts.ts`) |
 
 ### 주석 규칙
 
 - **한국어로만 작성** (코드와 일관성)
 - **비즈니스 로직만 주석 작성** (명백한 코드는 주석 금지)
 - **WHY를 설명**: WHAT과 HOW가 명백하면 생략
-- **단일 라인 주석만 사용** (멀티라인 doc 주석 금지)
+- **단일 라인 주석만 사용** (멀티라인 문서 주석 금지)
 
-**좋은 예**:
+**좋은 예시**:
 ```typescript
 // Notion API 레이트 제한 회피를 위한 캐싱
 const cachedPosts = await cache.get('published-posts');
 ```
 
-**나쁜 예**:
+**나쁜 예시**:
 ```typescript
 // posts 배열
 const posts = [];
@@ -140,14 +140,14 @@ function getPosts(category: string) {}
 
 ---
 
-## Functionality Implementation Standards
+## 기능 구현 표준
 
 ### Notion API 연동
 
 **필수 패턴**:
 1. `lib/notion.ts`에서 모든 Notion API 호출을 래핑
 2. 각 함수는 **에러 처리** 필수 (try-catch 또는 Result 패턴)
-3. **타입 안전성**: Notion 응답은 type-safe하게 변환
+3. **타입 안전성**: Notion 응답은 타입 안전하게 변환
 
 **작성 규칙**:
 ```typescript
@@ -172,7 +172,7 @@ export async function fetchPublishedPosts(): Promise<Post[]> {
 - 컴포넌트 구조 변경 금지
 
 **반응형 필수**:
-- Tailwind CSS breakpoint 기준: `sm` (640px), `md` (768px), `lg` (1024px)
+- Tailwind CSS 중단점 기준: `sm` (640px), `md` (768px), `lg` (1024px)
 - 모든 페이지와 컴포넌트는 **반응형 대응** 필수
 - 모바일/태블릿/데스크탑 모두 테스트
 
@@ -184,32 +184,32 @@ export async function fetchPublishedPosts(): Promise<Post[]> {
 
 - **Zustand 사용** (로컬 상태 저장 필요 시)
 - **localStorage 영속성**: `useLocalStorage` 훅 사용
-- **전역 상태**: Zustand store로 중앙화
+- **전역 상태**: Zustand 저장소로 중앙화
 
 ---
 
-## Framework/Plugin/Third-party Library Usage Standards
+## 프레임워크/라이브러리 사용 표준
 
 ### Next.js 15
 
 **규칙**:
-- **App Router 필수** (Pages Router 금지)
-- **Server Components 우선** (클라이언트 컴포넌트 최소화)
-- **ISR (Incremental Static Regeneration)**: 각 페이지에 `revalidate` 설정
+- **앱 라우터 필수** (페이지 라우터 금지)
+- **서버 컴포넌트 우선** (클라이언트 컴포넌트 최소화)
+- **ISR (증분 정적 재생성)**: 각 페이지에 `revalidate` 설정
   - 글 목록: `revalidate: 3600` (1시간)
   - 글 상세: `revalidate: 86400` (24시간)
 
 ### TypeScript
 
 **규칙**:
-- **strict mode 필수**
-- **as Type 캐스팅 최소화** (타입 정의로 해결)
-- **generics 활용**: 재사용 가능한 유틸 함수
+- **엄격한 모드 필수**
+- **타입 캐스팅 최소화** (타입 정의로 해결)
+- **제네릭 활용**: 재사용 가능한 유틸 함수
 
 ### Tailwind CSS
 
 **규칙**:
-- **utility first** 원칙 준수
+- **유틸리티 우선** 원칙 준수
 - **커스텀 클래스 최소화** (Tailwind 기본 클래스 활용)
 - **@apply 사용 최소화**
 
@@ -217,13 +217,13 @@ export async function fetchPublishedPosts(): Promise<Post[]> {
 
 **규칙**:
 - **기본 제공 컴포넌트 우선 사용**
-- **props 확장**: 필요시 컴포넌트 props 상속하여 확장
+- **Props 확장**: 필요시 컴포넌트 props 상속하여 확장
 
 ---
 
-## Workflow Standards
+## 개발 워크플로우
 
-### 개발 순서 (ROADMAP 준수)
+### 개발 순서 (로드맵 준수)
 
 모든 개발은 ROADMAP.md의 Phase 순서 준수:
 
@@ -256,7 +256,7 @@ export async function fetchPublishedPosts(): Promise<Post[]> {
 
 ---
 
-## Key File Interaction Standards
+## 주요 파일 상호작용 표준
 
 ### 필수 동시 수정 파일
 
@@ -264,7 +264,7 @@ export async function fetchPublishedPosts(): Promise<Post[]> {
 |---------|---------------|------|
 | `src/types/notion.ts` | 해당 타입 사용 파일들 | 타입 정의 변경 시 사용처 수정 필수 |
 | `src/lib/notion.ts` | API 호출 컴포넌트들 | API 함수 변경 시 호출 방식 일치 필요 |
-| `tsconfig.json` | `package.json` | 경로 alias 추가 시 확인 |
+| `tsconfig.json` | `package.json` | 경로 별칭 추가 시 확인 |
 | `CLAUDE.md` | Phase 완료 후 | 개발 정보 최신화 |
 | `.env.example` | `.env.local` | 환경 변수 추가 시 동시 수정 |
 
@@ -275,7 +275,7 @@ export async function fetchPublishedPosts(): Promise<Post[]> {
 [ ] 컴포넌트 파일 생성 (.tsx)
 [ ] 타입 정의 확인 (있으면 추가)
 [ ] 부모 컴포넌트에서 import 확인
-[ ] Storybook 테스트 (있으면 추가)
+[ ] 스토리북 테스트 (있으면 추가)
 
 API 함수 생성 시:
 [ ] lib/notion.ts에 함수 추가
@@ -287,20 +287,20 @@ API 함수 생성 시:
 [ ] app/route/page.tsx 생성
 [ ] 레이아웃 적용 확인
 [ ] 메타 태그 설정
-[ ] 경로 documentation 추가
+[ ] 경로 문서화 추가
 ```
 
 ---
 
-## AI Decision-making Standards
+## AI 에이전트 의사결정 표준
 
 ### 기술 선택 우선순위
 
 #### 1. UI 컴포넌트 선택 흐름
 ```
 새로운 UI 컴포넌트 필요?
-├─ shadcn/ui에 있는가? → YES → 기본 컴포넌트 사용
-├─ Tailwind CSS로 충분한가? → YES → Tailwind 유틸 사용
+├─ shadcn/ui에 있는가? → 예 → 기본 컴포넌트 사용
+├─ Tailwind CSS로 충분한가? → 예 → Tailwind 유틸 사용
 └─ 커스텀 필요 → shadcn/ui 기반으로 확장
 ```
 
@@ -310,7 +310,7 @@ API 함수 생성 시:
 ├─ 로컬 컴포넌트 상태? → useState 사용
 ├─ 전역 상태? → Zustand 사용
 ├─ localStorage 영속? → useLocalStorage 훅 사용
-└─ 서버 상태? → Server Components 사용
+└─ 서버 상태? → 서버 컴포넌트 사용
 ```
 
 #### 3. API 호출 선택 흐름
@@ -329,11 +329,11 @@ API 호출 필요?
 | 상태 저장 위치 | 여러 컴포넌트에서 사용하면 Zustand, 단일 컴포넌트면 useState |
 | API 함수 위치 | Notion 관련이면 lib/notion.ts, 다른 API면 별도 파일 생성 |
 | 타입 위치 | 단일 파일에서만 사용하면 같은 파일, 다중 사용이면 types/ 분리 |
-| 스타일링 | Tailwind 유틸로 충분하면 Tailwind, 복잡하면 CSS modules |
+| 스타일링 | Tailwind 유틸로 충분하면 Tailwind, 복잡하면 CSS 모듈 |
 
 ---
 
-## Prohibited Actions
+## 금지 사항
 
 ### 절대 금지 사항
 
@@ -350,14 +350,14 @@ interface DataResponse {
 const data: DataResponse = fetchData();
 ```
 
-❌ **글로벌 변수**
+❌ **전역 변수**
 ```typescript
 // 금지
 let globalCount = 0;
 
 // 권장
 const [count, setCount] = useState(0);
-// 또는 Zustand store 사용
+// 또는 Zustand 저장소 사용
 ```
 
 ❌ **직접 DOM 조작**
@@ -380,7 +380,7 @@ const data = await fetchData();
 // 또는 useEffect 내에서 호출
 ```
 
-❌ **타입 정의 없는 props**
+❌ **타입 정의 없는 Props**
 ```typescript
 // 금지
 function Card(props) {}
@@ -393,7 +393,7 @@ interface CardProps {
 function Card({ title, description }: CardProps) {}
 ```
 
-❌ **Pages Router 사용 (Next.js 15)**
+❌ **페이지 라우터 사용 (Next.js 15)**
 ```typescript
 // 금지
 pages/index.tsx
@@ -402,28 +402,28 @@ pages/index.tsx
 src/app/page.tsx
 ```
 
-❌ **console.log를 프로덕션에 포함**
+❌ **프로덕션에 console.log 포함**
 ```typescript
 // 금지 (프로덕션 빌드에 포함)
-console.log('debug info');
+console.log('디버그 정보');
 
 // 권장 (개발 중에만)
 if (process.env.NODE_ENV === 'development') {
-  console.log('debug info');
+  console.log('디버그 정보');
 }
 ```
 
 ### 피해야 할 패턴
 
-- ⚠️ **복잡한 조건문**: 3단계 이상 nesting 금지 (함수로 분리)
+- ⚠️ **복잡한 조건문**: 3단계 이상 중첩 금지 (함수로 분리)
 - ⚠️ **큰 컴포넌트**: 한 컴포넌트 300줄 이상 금지 (분리 필요)
 - ⚠️ **하드코딩된 값**: 모든 상수는 파일 상단 또는 .env에 정의
-- ⚠️ **과도한 prop drilling**: 3단계 이상이면 Context 또는 Zustand 사용
+- ⚠️ **과도한 Props 전달**: 3단계 이상이면 Context 또는 Zustand 사용
 - ⚠️ **재귀 함수**: 스택 오버플로우 위험 (루프로 변경)
 
 ---
 
-## Environment & Build
+## 환경 및 빌드
 
 ### 환경 변수 (.env.local)
 
@@ -445,7 +445,7 @@ npm run build
 npm run start
 ```
 
-**린트 체크**:
+**린트 확인**:
 ```bash
 npm run lint
 ```
@@ -458,16 +458,16 @@ npm run lint
 
 ---
 
-## Summary for AI Agents
+## AI 에이전트를 위한 요약
 
 이 문서는 AI 에이전트가 **Notion CMS Blog** 프로젝트에서 코드를 작성할 때 따라야 할 규칙입니다.
 
 **핵심 원칙**:
-1. ✅ TypeScript strict mode + ESLint 준수
-2. ✅ Next.js 15 app directory 사용
+1. ✅ TypeScript 엄격한 모드 + ESLint 준수
+2. ✅ Next.js 15 앱 디렉토리 사용
 3. ✅ shadcn/ui + Tailwind CSS로 UI 구성
 4. ✅ 모든 파일은 타입 정의와 에러 처리 포함
-5. ✅ ROADMAP의 Phase 순서 절대 준수
+5. ✅ 로드맵의 Phase 순서 절대 준수
 6. ✅ 파일 수정 시 동시 수정 대상 확인
 
 **개발 시작 전 확인**:
