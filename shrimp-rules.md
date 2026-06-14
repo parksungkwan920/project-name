@@ -1,6 +1,6 @@
-# 개발 가이드라인
+# 개발 규칙
 
-AI 에이전트를 위한 프로젝트 개발 규칙 및 의사결정 기준 문서입니다.
+AI 에이전트를 위한 Notion CMS Blog 프로젝트의 개발 규칙 및 의사결정 기준입니다.
 
 ---
 
@@ -64,7 +64,7 @@ project-name/
 - `tsconfig.json`: `"strict": true`로 설정
 - `"noImplicitAny": true` (any 타입 금지)
 - 모든 함수는 **명시적 매개변수 타입** 및 **반환 타입** 정의 필수
-- 리액트 props는 interface 또는 type으로 정의
+- 리액트 Props는 interface 또는 type으로 정의
 
 **올바른 예시**:
 ```typescript
@@ -81,7 +81,7 @@ export function PostCard({ title, category, publishedDate }: PostCardProps) {
 
 **금지 사항**:
 - `any` 타입 사용 금지
-- 타입 정의 없는 props 전달 금지
+- 타입 정의 없는 Props 전달 금지
 - `as const`의 과도한 사용 금지
 
 ---
@@ -89,7 +89,7 @@ export function PostCard({ title, category, publishedDate }: PostCardProps) {
 ### ESLint 규칙 준수
 
 **설정**:
-- Next.js 공식 ESLint config 사용
+- Next.js 공식 ESLint 설정 사용
 - 추가 규칙: `eslint-plugin-react-hooks`, `@typescript-eslint`
 - `.eslintrc.json`에서 명시된 규칙 따르기
 
@@ -217,7 +217,7 @@ export async function fetchPublishedPosts(): Promise<Post[]> {
 
 **규칙**:
 - **기본 제공 컴포넌트 우선 사용**
-- **Props 확장**: 필요시 컴포넌트 props 상속하여 확장
+- **Props 확장**: 필요시 컴포넌트 Props 상속하여 확장
 
 ---
 
@@ -236,6 +236,28 @@ export async function fetchPublishedPosts(): Promise<Post[]> {
 **규칙**:
 - 이전 Phase가 완료되기 전까지 다음 Phase 시작 금지
 - 각 Phase 완료 기준 확인 후 진행
+
+### 6. 버전 관리
+
+#### 6.1. 주요 분기 규칙
+
+**주요 분기**:
+- `main`: 안정적이고 사용 가능한 제품 버전을 나타냄
+- `develop` (필요시 사용): 개발 중인 최신 버전을 나타냄
+
+**커밋 빈도 및 전략**:
+- 자주 작은 단위로 커밋 권장 (의미 있는 변경 단위)
+- 각 커밋은 명확한 목적을 가져야 함
+
+#### 6.2. 충돌 해결 규칙
+
+- 병합 또는 리베이스 시 충돌이 발생하면 **반드시 신중하게 해결** 필요
+- 충돌 해결 후 레이아웃 및 코드 구조의 정확성과 완전성 확인 필수
+
+#### 6.3. 변경 로그 업데이트
+
+- 새 버전 배포 전에 **반드시** `CHANGELOG.md` 업데이트 필요
+- 기록 내용: 버전 번호, 배포 날짜, 새로운 기능, 수정된 버그, 주요 변경사항
 
 ### 파일 생성 규칙
 
@@ -256,7 +278,7 @@ export async function fetchPublishedPosts(): Promise<Post[]> {
 
 ---
 
-## 주요 파일 상호작용 표준
+## 7. 주요 파일 상호작용 규칙
 
 ### 필수 동시 수정 파일
 
@@ -264,9 +286,10 @@ export async function fetchPublishedPosts(): Promise<Post[]> {
 |---------|---------------|------|
 | `src/types/notion.ts` | 해당 타입 사용 파일들 | 타입 정의 변경 시 사용처 수정 필수 |
 | `src/lib/notion.ts` | API 호출 컴포넌트들 | API 함수 변경 시 호출 방식 일치 필요 |
-| `tsconfig.json` | `package.json` | 경로 별칭 추가 시 확인 |
+| `tsconfig.json` | `package.json` | 경로 별칭 추가 시 확인 필수 |
 | `CLAUDE.md` | Phase 완료 후 | 개발 정보 최신화 |
 | `.env.example` | `.env.local` | 환경 변수 추가 시 동시 수정 |
+| `README.md` 또는 `docs/` 내의 문서 | 기능 변경 시 | 기능 수정 또는 신규 기능 추가 시 문서 최신화 필수 |
 
 ### 파일 수정 체크리스트
 
@@ -469,6 +492,7 @@ npm run lint
 4. ✅ 모든 파일은 타입 정의와 에러 처리 포함
 5. ✅ 로드맵의 Phase 순서 절대 준수
 6. ✅ 파일 수정 시 동시 수정 대상 확인
+7. ✅ 버전 관리 및 변경 로그 정책 준수
 
 **개발 시작 전 확인**:
 - [ ] 이전 Phase가 완료되었는가?
@@ -476,3 +500,4 @@ npm run lint
 - [ ] 에러 처리가 포함되어 있는가?
 - [ ] 반응형 디자인이 구현되었는가?
 - [ ] ESLint 경고가 없는가?
+- [ ] 변경 로그가 업데이트되었는가?
